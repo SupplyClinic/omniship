@@ -225,6 +225,9 @@ module Omniship
                 }
               }
             }
+            xml.RateInformation {
+              xml.NegotiatedRatesIndicator
+            }
             if options[:return_service_code].present?
               xml.ReturnService {
                 xml.Code options[:return_service_code]
