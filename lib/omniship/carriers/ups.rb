@@ -137,7 +137,7 @@ module Omniship
       access_request      = build_access_request
       ship_accept_request = build_ship_accept(digest)
       response            = commit(:shipaccept, save_request(access_request.gsub("\n", "") + ship_accept_request.gsub("\n", "")), options[:test])
-      parse_ship_accept_response(response, options)
+      parse_ship_accept_response(response, digest, options)
     end
 
     def void_shipment(ups_shipment_id, tracking_number, options={})
@@ -639,6 +639,7 @@ module Omniship
         tracking_number = []
         label = []
 
+        @response_text[:negotiated_charges] = xml.xpath('/*/ShipmentResults/NegotiatedRates/NetSummaryCharges/GrandTotal/MonetaryValue').text
         @response_text[:charges] = xml.xpath('/*/ShipmentResults/*/TotalCharges/MonetaryValue').text
         @response_text[:shipment_id] = xml.xpath('/*/ShipmentResults/ShipmentIdentificationNumber').text
 
