@@ -512,8 +512,8 @@ module Omniship
           rate_estimates << RateEstimate.new(origin, destination, @@name,
                                              :service_code => service_code,
                                              :service_name => service_name_for(origin, service_code),
-                                             :total_price => rated_shipment.xpath('TotalCharges/MonetaryValue').text.to_s.to_f,
-                                             :currency => rated_shipment.xpath('TotalCharges/CurrencyCode').text.to_s,
+                                             :total_price => rated_shipment.xpath('NegotiatedRates/NetSummaryCharges/GrandTotal/MonetaryValue').text.to_s.to_f,
+                                             :currency => rated_shipment.xpath('NegotiatedRates/NetSummaryCharges/GrandTotal/MonetaryValue').text.to_s,
                                              :service_code => service_code,
                                              :packages => packages,
                                              :delivery_range => [delivery_date])
