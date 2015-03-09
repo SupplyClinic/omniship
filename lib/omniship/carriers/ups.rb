@@ -393,6 +393,9 @@ module Omniship
             if options[:shipper] && options[:shipper] != origin
               build_location_node(['ShipFrom'], origin, options, xml)
             end
+            xml.ShipmentRatingOptions {
+              xml.NegotiatedRatesIndicator
+            }
 
             # not implemented:  * Shipment/ShipmentWeight element
             #                   * Shipment/ReferenceNumber element
