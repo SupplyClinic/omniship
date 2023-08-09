@@ -8,7 +8,7 @@ class LocationTest < Test::Unit::TestCase
   end
 
   def test_countries
-    assert_instance_of ActiveMerchant::Country, @locations[:ottawa].country
+    assert_instance_of ActiveUtils::Country, @locations[:ottawa].country
     assert_equal 'CA', @locations[:ottawa].country_code(:alpha2)
   end
   

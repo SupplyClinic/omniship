@@ -154,12 +154,12 @@ class USPSTest < Test::Unit::TestCase
   # countries are currently working. Commented out here just because it's a lot of
   # hits to their server at once:
   
-  # ALL_COUNTRIES = ActiveMerchant::Country.const_get('COUNTRIES').map {|c| c[:alpha2]}
+  # ALL_COUNTRIES = ActiveUtils::Country.const_get('COUNTRIES').map {|c| c[:alpha2]}
   # SPECIAL_COUNTRIES = USPS.const_get('COUNTRY_NAME_CONVERSIONS').keys.sort
   # NORMAL_COUNTRIES = (ALL_COUNTRIES - SPECIAL_COUNTRIES)
   # 
   # SPECIAL_COUNTRIES.each do |code|
-  #   unless ActiveMerchant::Country.find(code).name == USPS.const_get('COUNTRY_NAME_CONVERSIONS')[code]
+  #   unless ActiveUtils::Country.find(code).name == USPS.const_get('COUNTRY_NAME_CONVERSIONS')[code]
   #     define_method("test_country_#{code}") do
   #       response = nil
   #       begin
