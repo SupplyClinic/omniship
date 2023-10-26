@@ -182,7 +182,7 @@ module Omniship
     
     # Once the address verification API is implemented, remove this and have valid_credentials? build the request using that instead.
     def canned_address_verification_works?
-      request = "%3CCarrierPickupAvailabilityRequest%20USERID=%22#{URI.encode(@options[:login])}%22%3E%20%0A%3CFirmName%3EABC%20Corp.%3C/FirmName%3E%20%0A%3CSuiteOrApt%3ESuite%20777%3C/SuiteOrApt%3E%20%0A%3CAddress2%3E1390%20Market%20Street%3C/Address2%3E%20%0A%3CUrbanization%3E%3C/Urbanization%3E%20%0A%3CCity%3EHouston%3C/City%3E%20%0A%3CState%3ETX%3C/State%3E%20%0A%3CZIP5%3E77058%3C/ZIP5%3E%20%0A%3CZIP4%3E1234%3C/ZIP4%3E%20%0A%3C/CarrierPickupAvailabilityRequest%3E%0A"
+      request = "%3CCarrierPickupAvailabilityRequest%20USERID=%22#{URI::Parser.new.escape(@options[:login])}%22%3E%20%0A%3CFirmName%3EABC%20Corp.%3C/FirmName%3E%20%0A%3CSuiteOrApt%3ESuite%20777%3C/SuiteOrApt%3E%20%0A%3CAddress2%3E1390%20Market%20Street%3C/Address2%3E%20%0A%3CUrbanization%3E%3C/Urbanization%3E%20%0A%3CCity%3EHouston%3C/City%3E%20%0A%3CState%3ETX%3C/State%3E%20%0A%3CZIP5%3E77058%3C/ZIP5%3E%20%0A%3CZIP4%3E1234%3C/ZIP4%3E%20%0A%3C/CarrierPickupAvailabilityRequest%3E%0A"
       # expected_hash = {"CarrierPickupAvailabilityResponse"=>{"City"=>"HOUSTON", "Address2"=>"1390 Market Street", "FirmName"=>"ABC Corp.", "State"=>"TX", "Date"=>"3/1/2004", "DayOfWeek"=>"Monday", "Urbanization"=>nil, "ZIP4"=>"1234", "ZIP5"=>"77058", "CarrierRoute"=>"C", "SuiteOrApt"=>"Suite 777"}}
       xml = REXML::Document.new(commit(:test, request, true))
       xml.get_text('/CarrierPickupAvailabilityResponse/City').to_s == 'HOUSTON' &&
@@ -222,7 +222,7 @@ module Omniship
           end
         end
       end
-      URI.encode(save_request(request.to_s))
+      URI::Parser.new.escape(save_request(request.to_s))
     end
     
     # important difference with international rate requests:
@@ -265,7 +265,7 @@ module Omniship
           end
         end
       end
-      URI.encode(save_request(request.to_s))
+      URI::Parser.new.escape(save_request(request.to_s))
     end
     
     def parse_rate_response(origin, destination, packages, response, options={})

@@ -19,7 +19,7 @@ class USPSTest < Test::Unit::TestCase
   
   def test_build_world_rate_request
     expected_request = "<IntlRateV2Request USERID='login'><Package ID='0'><Pounds>0</Pounds><Ounces>9</Ounces><MailType>Package</MailType><GXG><POBoxFlag>N</POBoxFlag><GiftFlag>N</GiftFlag></GXG><ValueOfContents>0.0</ValueOfContents><Country><![CDATA[Canada]]></Country><Container>RECTANGULAR</Container><Size>REGULAR</Size><Width>5.51</Width><Length>7.48</Length><Height>0.79</Height><Girth>12.60</Girth></Package></IntlRateV2Request>"
-    @carrier.expects(:commit).with(:world_rates, URI.encode(expected_request), false).returns(expected_request)
+    @carrier.expects(:commit).with(:world_rates, URI::Parser.new.escape(expected_request), false).returns(expected_request)
     @carrier.expects(:parse_rate_response)
     @carrier.find_rates(@locations[:beverly_hills], @locations[:ottawa], @packages[:book], :test => true)
   end
