@@ -728,7 +728,10 @@ module Omniship
     end
 
     def commit(action, request, test = false)
-      ssl_post("#{test ? TEST_URL : LIVE_URL}/#{RESOURCES[action]}", request)
+      endpoint = "#{test ? TEST_URL : LIVE_URL}/#{RESOURCES[action]}"
+      headers = { 'Authorization' => "Bearer #{@options[:access_token]}" }
+
+      ssl_post(endpoint, request, headers)
     end
 
 
