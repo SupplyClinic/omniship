@@ -6,8 +6,8 @@ module Omniship
     cattr_reader :name
     @@name = "UPS"
 
-    TEST_URL = 'https://wwwcie.ups.com'
-    LIVE_URL = 'https://onlinetools.ups.com'
+    TEST_URL = 'https://wwwcie.ups.com/api'.freeze
+    LIVE_URL = 'https://onlinetools.ups.com/api'.freeze
 
     RESOURCES = {
         :rates => 'ups.app/xml/Rate',
@@ -17,7 +17,7 @@ module Omniship
         :shipvoid => 'ups.app/xml/Void',
         :valid_address => 'ups.app/xml/AV',
         :valid_address_street => 'ups.app/xml/XAV'
-    }
+    }.freeze
 
     PICKUP_CODES = HashWithIndifferentAccess.new({
                                                      :daily_pickup => "01",
@@ -67,36 +67,36 @@ module Omniship
         "84" => "UPS Today Intercity",
         "85" => "UPS Today Express",
         "86" => "UPS Today Express Saver"
-    }
+    }.freeze
 
     CANADA_ORIGIN_SERVICES = {
         "01" => "UPS Express",
         "02" => "UPS Expedited",
         "14" => "UPS Express Early A.M."
-    }
+    }.freeze
 
     MEXICO_ORIGIN_SERVICES = {
         "07" => "UPS Express",
         "08" => "UPS Expedited",
         "54" => "UPS Express Plus"
-    }
+    }.freeze
 
     EU_ORIGIN_SERVICES = {
         "07" => "UPS Express",
         "08" => "UPS Expedited"
-    }
+    }.freeze
 
     OTHER_NON_US_ORIGIN_SERVICES = {
         "07" => "UPS Express"
-    }
+    }.freeze
 
     # From http://en.wikipedia.org/w/index.php?title=European_Union&oldid=174718707 (Current as of November 30, 2007)
-    EU_COUNTRY_CODES = ["GB", "AT", "BE", "BG", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE"]
+    EU_COUNTRY_CODES = ["GB", "AT", "BE", "BG", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE"].freeze
 
-    US_TERRITORIES_TREATED_AS_COUNTRIES = ["AS", "FM", "GU", "MH", "MP", "PW", "PR", "VI"]
+    US_TERRITORIES_TREATED_AS_COUNTRIES = ["AS", "FM", "GU", "MH", "MP", "PW", "PR", "VI"].freeze
 
     def requirements
-      [:key, :login, :password]
+      [:access_token]
     end
 
     def find_rates(origin, destination, packages, options={})
@@ -104,18 +104,16 @@ module Omniship
       options             = @options.merge(options)
       options[:test]      = options[:test].nil? ? false : options[:test]
       packages            = Array(packages)
-      access_request      = build_access_request
       rate_request        = build_rate_request(origin, destination, packages, options)
-      response            = commit(:rates, save_request(access_request.gsub("\n", "") + rate_request.gsub("\n", "")), options[:test])
+      response            = commit(:rates, save_request(rate_request.gsub("\n", "")), options[:test])
       parse_rate_response(origin, destination, packages, response, options)
     end
 
     def find_tracking_info(tracking_number, options={})
       options          = @options.update(options)
       options[:test]   = options[:test].nil? ? false : options[:test]
-      access_request   = build_access_request
       tracking_request = build_tracking_request(tracking_number, options)
-      response         = commit(:track, save_request(access_request.gsub("\n", "") + tracking_request.gsub("\n", "")), options[:test])
+      response         = commit(:track, save_request(tracking_request.gsub("\n", "")), options[:test])
       # parse_tracking_response(response, options)
     end
 
@@ -126,17 +124,15 @@ module Omniship
       options              = @options.merge(options)
       options[:test]       = options[:test].nil? ? true : options[:test]
       packages             = Array(packages)
-      access_request       = build_access_request
       ship_confirm_request = build_ship_confirm(origin, destination, packages, options)
-      response             = commit(:shipconfirm, save_request(access_request.gsub("\n", "") + ship_confirm_request.gsub("\n", "")), options[:test])
+      response             = commit(:shipconfirm, save_request(ship_confirm_request.gsub("\n", "")), options[:test])
       parse_ship_confirm_response(origin, destination, packages, response, options)
     end
 
     def accept_shipment(digest, options={})
       options[:test]      = options[:test].nil? ? true : options[:test]
-      access_request      = build_access_request
       ship_accept_request = build_ship_accept(digest)
-      response            = commit(:shipaccept, save_request(access_request.gsub("\n", "") + ship_accept_request.gsub("\n", "")), options[:test])
+      response            = commit(:shipaccept, save_request(ship_accept_request.gsub("\n", "")), options[:test])
       parse_ship_accept_response(response, options)
     end
 
@@ -144,27 +140,24 @@ module Omniship
       @options          = @options.merge(options)
       options           = @options.merge(options)
       options[:test]    = options[:test].nil? ? true : options[:test]
-      access_request    = build_access_request
       ship_void_request = build_void_request(ups_shipment_id,tracking_number)
-      response          = commit(:shipvoid, save_request(access_request.gsub("\n", "") + ship_void_request.gsub("\n", "")), options[:test])
+      response          = commit(:shipvoid, save_request(ship_void_request.gsub("\n", "")), options[:test])
       parse_ship_void_response(response, options)
     end
 
     def validate_address(city, state, zip_code, country_code, options={})
       @options                 = @options.merge(options)
-      access_request           = build_access_request
       validate_address_request = build_valid_address_request(city,state,zip_code,country_code)
       options[:test]           = options[:test].nil? ? true : options[:test]
-      response                 = commit(:valid_address, save_request(access_request.gsub("\n", "") + validate_address_request.gsub("\n", "")), options[:test])
+      response                 = commit(:valid_address, save_request(validate_address_request.gsub("\n", "")), options[:test])
       parse_ship_valid_address(response)
     end
 
     def validate_address_street(address, city, state, zip_code, country_code, options={})
       @options = @options.merge(options)
-      access_request = build_access_request
       validate_address_street_request = build_valid_address_street_request(address,city,state,zip_code,country_code)
       options[:test] = options[:test].nil? ? true : options[:test]
-      response = commit(:valid_address_street, save_request(access_request.gsub("\n", "") + validate_address_street_request.gsub("\n", "")), options[:test])
+      response = commit(:valid_address_street, save_request(validate_address_street_request.gsub("\n", "")), options[:test])
       parse_ship_valid_address_street(response)
     end
 
@@ -180,18 +173,6 @@ module Omniship
       else
         location
       end
-    end
-
-
-    def build_access_request
-      builder = Nokogiri::XML::Builder.new do |xml|
-        xml.AccessRequest {
-          xml.AccessLicenseNumber @options[:key].nil? ? @config['ups']['key'] : @options[:key]
-          xml.UserId @options[:login].nil? ? @config['ups']['username'] : @options[:login]
-          xml.Password @options[:password].nil? ? @config['ups']['password'] : @options[:password]
-        }
-      end
-      builder.to_xml
     end
 
     # Build the ship_confirm XML request
@@ -747,7 +728,10 @@ module Omniship
     end
 
     def commit(action, request, test = false)
-      ssl_post("#{test ? TEST_URL : LIVE_URL}/#{RESOURCES[action]}", request)
+      endpoint = "#{test ? TEST_URL : LIVE_URL}/#{RESOURCES[action]}"
+      headers = { 'Authorization' => "Bearer #{@options[:access_token]}" }
+
+      ssl_post(endpoint, request, headers)
     end
 
 
