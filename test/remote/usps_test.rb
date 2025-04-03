@@ -60,8 +60,8 @@ class USPSTest < Test::Unit::TestCase
     rate = response.rates.first
     assert_equal 'USPS', rate.carrier
     assert_equal 'USD', rate.currency
-    assert_instance_of Fixnum, rate.total_price
-    assert_instance_of Fixnum, rate.price
+    assert_instance_of Integer, rate.total_price
+    assert_instance_of Integer, rate.price
     assert_instance_of String, rate.service_name
     assert_instance_of String, rate.service_code
     assert_instance_of Array, rate.package_rates
@@ -99,8 +99,8 @@ class USPSTest < Test::Unit::TestCase
     rate = response.rates.first
     assert_equal 'USPS', rate.carrier
     assert_equal 'USD', rate.currency
-    assert_instance_of Fixnum, rate.total_price
-    assert_instance_of Fixnum, rate.price
+    assert_instance_of Integer, rate.total_price
+    assert_instance_of Integer, rate.price
     assert_instance_of String, rate.service_name
     assert_instance_of String, rate.service_code
     assert_instance_of Array, rate.package_rates

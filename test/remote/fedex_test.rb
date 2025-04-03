@@ -23,7 +23,7 @@ class FedExTest < Test::Unit::TestCase
       assert !response.rates.blank?
       response.rates.each do |rate|
         assert_instance_of String, rate.service_name
-        assert_instance_of Fixnum, rate.price
+        assert_instance_of Integer, rate.price
       end
     end
   end
@@ -89,7 +89,7 @@ class FedExTest < Test::Unit::TestCase
       assert !response.rates.blank?
       response.rates.each do |rate|
         assert_instance_of String, rate.service_name
-        assert_instance_of Fixnum, rate.price
+        assert_instance_of Integer, rate.price
       end
     end
   end
@@ -105,7 +105,7 @@ class FedExTest < Test::Unit::TestCase
       assert !response.rates.blank?
       response.rates.each do |rate|
         assert_instance_of String, rate.service_name
-        assert_instance_of Fixnum, rate.price
+        assert_instance_of Integer, rate.price
       end
     end
   end
@@ -121,7 +121,7 @@ class FedExTest < Test::Unit::TestCase
       assert !response.rates.blank?
       response.rates.each do |rate|
         assert_instance_of String, rate.service_name
-        assert_instance_of Fixnum, rate.price
+        assert_instance_of Integer, rate.price
       end
     end
   end
